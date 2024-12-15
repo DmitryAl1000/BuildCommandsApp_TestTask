@@ -21,6 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApplication", "Conso
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StaticFiles", "StaticFiles", "{CA23CFC5-99C7-4224-AB2F-884568974C32}"
 	ProjectSection(SolutionItems) = preProject
+		BuildCommandsApp_TestTask\bin\Debug\net8.0\bigFile.txt = BuildCommandsApp_TestTask\bin\Debug\net8.0\bigFile.txt
 		BuildCommandsApp_TestTask\bin\Debug\net8.0\makeFile.txt = BuildCommandsApp_TestTask\bin\Debug\net8.0\makeFile.txt
 	EndProjectSection
 EndProject

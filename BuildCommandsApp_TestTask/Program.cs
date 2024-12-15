@@ -4,22 +4,25 @@ using Domain;
 using SimpleSpeedTests;
 using System.Collections.Concurrent;
 
-string bigFileName = "bigFile.txt";
 
-TargetCreator fileBuilder = new TargetCreator(bigFileName);
+//Генерируем файл если нужно
+bool generateFile = false;
+string generatedFileName = "generatedFile.txt";
+TargetCreator fileBuilder = new TargetCreator(generatedFileName);
 fileBuilder.CountOfTargets = 1000000;
 fileBuilder.MinDependentTarget = 0;
 fileBuilder.MaxDependentTarget = 3;
 fileBuilder.MinActionsInTarget = 1;
 fileBuilder.MaxActionsInTarget = 4;
-fileBuilder.CreateFile();
 
+if (generateFile)
+{
+    fileBuilder.CreateFile();
+}
 
-SimpleSpeedTest test = new SimpleSpeedTest(bigFileName);
-test.RunTests();
-test.PrintReport();
-
-string simpleFile = "makeFile.txt";
+//Имеющиеся файлы
+string bigFileName = "bigFile.txt"; //1 мил строк. сгенерированный 
+string simpleFile = "makeFile.txt"; //cо всякими ошибками, циклами и прочим
 
 // Получаем имя файла
 var settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, bigFileName);
@@ -42,5 +45,7 @@ catch (ArgumentException ex)
 ConsoleApp consoleApplication = new ConsoleApp(targetsDictionary);
 consoleApplication.Run();
 
-
-fileBuilder.DeleteFile();
+if (generateFile)
+{
+    fileBuilder.DeleteFile();
+}

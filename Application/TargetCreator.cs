@@ -12,11 +12,10 @@ namespace Application
     public class TargetCreator
     {
         const string TARGET_NAME = "Target";
+        readonly string[] actionsNames = { "sort", "get", "set", "delete", "create", "update", "send", "start", "run", "getFlowers", "eat", "sleep" };
 
         public int CountOfTargets { get; set; } = 10;
-
         public int MaxDependentTarget { get; set; } = 2;
-
         private int _minDependentTarget = 0;
         public int MinDependentTarget
         {
@@ -30,9 +29,7 @@ namespace Application
                 _minDependentTarget = value;
             }
         }
-
         public int MaxActionsInTarget { get; set; } = 5;
-
         private int _minActionsInTarget = 0;
         public int MinActionsInTarget
         {
@@ -46,16 +43,16 @@ namespace Application
                 _minActionsInTarget = value;
             }
         }
-
         private string FileName { get; set; }
 
-        private string[] actionsNames = new string[] { "sort", "get", "set", "delete", "create", "update", "send", "start", "run", "getFlowers", "eat", "sleep", };
-
-
+        StringBuilder _stringBuilder;
+        Random _random;
 
         public TargetCreator(string fileName)
         {
             this.FileName = fileName;
+            _stringBuilder = new();
+            _random = new();
         }
 
         public void CreateFile()
@@ -85,35 +82,36 @@ namespace Application
         // Создаем большую строку по заданным параметрам
         private string GenerateText()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-
             for (int x = 0; x < CountOfTargets; x++)
             {
-                Random rnd = new Random();
-                int dependentTargets = rnd.Next(MinDependentTarget, MaxDependentTarget);
-                int actionsIntarget = rnd.Next(MinActionsInTarget, MaxActionsInTarget);
+                int dependentTargets = _random.Next(MinDependentTarget, MaxDependentTarget);
+                int actionsIntarget = _random.Next(MinActionsInTarget, MaxActionsInTarget);
 
-                stringBuilder.Append(TARGET_NAME + $"{x}:");
-                for (int y = 0; y < dependentTargets; y++)
-                {
-                    int targetNum = rnd.Next(0, CountOfTargets - 1); //-1 потому как нумерация идет с нуля.
+                _stringBuilder.Append(TARGET_NAME + $"{x}:");
 
-                    stringBuilder.Append(" " + TARGET_NAME + $"{targetNum}");
-                }
-                stringBuilder.Append("\n");
-
-                for (int z = 0; z < actionsIntarget; z++)
-                {
-                    int actionNum = rnd.Next(0, actionsNames.Length);
-                    stringBuilder.Append(" " + actionsNames[actionNum] + $"\n");
-                }
+                GenerateDependencies(dependentTargets);
+                GenerateActions(actionsIntarget);
             }
-
-            return stringBuilder.ToString();
+            return _stringBuilder.ToString();
         }
 
+        private void GenerateDependencies(int dependentTargets)
+        {
+            for (int y = 0; y < dependentTargets; y++)
+            {
+                int targetNum = _random.Next(0, CountOfTargets - 1); //-1 потому как нумерация идет с нуля.
 
-
-
+                _stringBuilder.Append(" " + TARGET_NAME + $"{targetNum}");
+            }
+            _stringBuilder.Append("\n");
+        }
+        private void GenerateActions(int actionsIntarget) 
+        {
+            for (int z = 0; z < actionsIntarget; z++)
+            {
+                int actionNum = _random.Next(0, actionsNames.Length);
+                _stringBuilder.Append(" " + actionsNames[actionNum] + $"\n");
+            }
+        }
     }
 }

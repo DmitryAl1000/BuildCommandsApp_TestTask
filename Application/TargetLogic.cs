@@ -60,7 +60,7 @@ namespace Application
             ExecuteAllActionsFromStaсkOftTrgets();
         }
 
-        //без рекурсии находим все задачи и задачи задач
+        //без рекурсии находим все задачи и задачи задач, записываем в стек
         private void FillStackOfTargetsNoRecurtion(string targetName)
         {
             ExeptionIfTargetNotInDictionary(targetName);
@@ -82,19 +82,16 @@ namespace Application
                 foreach (var dependentTargetName in target.DependentTargetsNames)
                 {
                     ExeptionIfTargetNotInDictionary(dependentTargetName);
-                    if (!_resultTargetHash.Contains(dependentTargetName)) // Если новая задача уже есть в хешсет, значит у нас зацикливание
-                    {
-                        Target dependentTarget = _dictionaryOfTargets[dependentTargetName.ToLower()];
-                        targetsInWork.Push(dependentTarget);
-                    }
-                    else
+                    if (_resultTargetHash.Contains(dependentTargetName)) // Если новая задача уже есть в хешсет, значит у нас зацикливание
                     {
                         ExeptionLooping(dependentTargetName);
                     }
+
+                    Target dependentTarget = _dictionaryOfTargets[dependentTargetName.ToLower()];
+                    targetsInWork.Push(dependentTarget);
                 }
             }
         }
-
 
         private void ExeptionLooping(string dependenTargetName)
         {
@@ -124,45 +121,6 @@ namespace Application
             }
         }
 
-        //Рекурсией находим все задачи и задачи задач
-        private void FindAll(string targetName)
-        {
-            if (!IsTargetInDictionary(targetName))
-            {
-                var lastTarget = _resultTargetsStack.Pop();
-                string targetWhitherror = $"Неверная зависимость у задачи: {lastTarget.TargetName}\n";
-
-                throw new ArgumentException($"Среди задач нет: {targetName} \n{targetWhitherror}");
-            }
-
-            Target target = _dictionaryOfTargets[targetName.ToLower()];
-
-            //Добавляем в хеш только уникальные задачи
-            if (!_resultTargetHash.Contains(targetName))
-            {
-                _resultTargetsStack.Push(target);
-                _resultTargetHash.Add(targetName);
-            }
-            else
-            {
-                StringBuilder errorMessege = new StringBuilder();
-                foreach (var targetForError in _resultTargetsStack)
-                {
-                    errorMessege.Append($" <= {targetForError.TargetName}");
-
-                    if (targetForError.TargetName == targetName) break;
-                }
-                throw new ArgumentException($"Произошло зацикливание на задачу:\n{targetName}{errorMessege}");
-            }
-
-            foreach (var subtaskName in target.DependentTargetsNames)
-            {
-                FindAll(subtaskName);
-            }
-            _resultTargetHash.Remove(targetName); //удаляем отработанную задачу из хеша
-        }
-
-
         //Выполняем все действия(вывод на консоль) которые помещены в стек задач
         private void ExecuteAllActionsFromStaсkOftTrgets()
         {
@@ -171,7 +129,6 @@ namespace Application
                 ExecuteActions(target);
             }
         }
-
         //Выполняем действия для одно задачи
         private void ExecuteActions(Target target)
         {
@@ -182,7 +139,6 @@ namespace Application
                 Console.ResetColor();
             }
         }
-
         // Эта задача есть в словаре? 
         private bool IsTargetInDictionary(string targetName)
         {
