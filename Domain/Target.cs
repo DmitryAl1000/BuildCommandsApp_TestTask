@@ -3,11 +3,11 @@
     public class Target
     {
         public string TargetName { get; }
-        public List<string> DependentTargetsNames { get; }
+        public string[] DependentTargetsNames { get; }
 
-        public List<string> Actions { get; }
+        public string[] Actions { get; }
 
-        public Target(string targeName, List<string> dependentTargetsNames, List<string> Actions)
+        public Target(string targeName, string[] dependentTargetsNames, string[] Actions)
         {
             this.TargetName = targeName;
             this.DependentTargetsNames = dependentTargetsNames;

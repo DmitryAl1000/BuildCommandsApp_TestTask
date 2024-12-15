@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ConsoleApplication\ConsoleApplication.csproj" />
+    <ProjectReference Include="..\SimpleSpeedTest\SimpleSpeedTests.csproj" />
   </ItemGroup>
 
 </Project>
